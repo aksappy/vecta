@@ -1,4 +1,7 @@
+use std::time::Instant;
+
 use clap::{crate_version, Parser, Subcommand};
+use vecta::indexer::{index_directory, read_index};
 
 #[derive(Parser)]
 #[command(name = "vecta")]
@@ -21,8 +24,8 @@ enum VectaCommand {
         directory: String,
 
         /// Generate index instead of normal indexing
-        #[arg(short = 'g', long = "generate")]
-        generate: bool,
+        #[arg(short = 'g', long = "global")]
+        global: bool,
     },
     /// List indexed directories
     List,
@@ -41,16 +44,18 @@ fn main() {
     match args.command {
         VectaCommand::Search { query } => {
             println!("Searching for: {}", query);
-            // Implement search functionality here
+            let start_time = Instant::now();
+            read_index(query);
+            let elapsed_time = start_time.elapsed();
+            println!("Search took: {:?}", elapsed_time);
         }
-        VectaCommand::Index {
-            directory,
-            generate,
-        } => {
-            if generate {
-                println!("Generating index for directory: {}", directory);
+        VectaCommand::Index { directory, global } => {
+            if global {
+                println!("Generating global index for directory: {}", directory);
+                index_directory(directory);
             } else {
                 println!("Indexing directory: {}", directory);
+                index_directory(directory);
             }
             // Implement indexing functionality here
         }

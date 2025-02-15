@@ -4,6 +4,7 @@ use tantivy::{
     collector::TopDocs,
     directory::MmapDirectory,
     doc,
+    indexer::LogMergePolicy,
     query::QueryParser,
     schema::{Schema, TextOptions, STORED, TEXT},
     Document, Index, IndexWriter, ReloadPolicy, SegmentId, TantivyDocument,
@@ -51,7 +52,7 @@ fn is_hidden(entry: &DirEntry) -> bool {
 pub fn merge_indices() {
     let schema = build_doc_schema(None);
     let index = create_index_if_not_exists("./index", schema.clone());
-    let mut index_writer: IndexWriter = index.writer(50_000_000).unwrap();
+    let mut index_writer: IndexWriter = index.writer(500_000_000).unwrap();
     // Get the list of all segments (you'd normally let Tantivy handle this)
     let segment_ids = index_writer
         .index()
