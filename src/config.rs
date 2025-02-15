@@ -78,7 +78,13 @@ mod config_tests {
         };
         let config_string = toml::to_string(&config).unwrap();
         let result: VectaConfiguration = toml::from_str(config_string.as_str()).unwrap();
-        assert_eq!(result.main.directory, "/path/to/directory");
+        assert!(
+            result
+                .main
+                .directories
+                .contains(&String::from("/path/to/directory"))
+                == true
+        );
         assert!(
             result
                 .main
