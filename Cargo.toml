@@ -24,6 +24,8 @@ path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.5.29", features = ["derive"] }
+serde = "1.0.217"
 tantivy = "0.22.0"
 tempfile = "3.16.0"
+toml = "0.8.20"
 walkdir = "2.5.0"
