@@ -4,7 +4,6 @@ use tantivy::{
     collector::TopDocs,
     directory::MmapDirectory,
     doc,
-    indexer::LogMergePolicy,
     query::QueryParser,
     schema::{Schema, TextOptions, STORED, TEXT},
     Document, Index, IndexWriter, ReloadPolicy, SegmentId, TantivyDocument,
@@ -73,6 +72,7 @@ pub fn merge_indices() {
 pub fn index_directory(directory_path: String) {
     let schema = build_doc_schema(None);
     let index = create_index_if_not_exists("./index", schema.clone());
+    // TODO take this from a global config
     let mut index_writer: IndexWriter = index.writer(50_000_000).unwrap();
 
     let walker = WalkDir::new(directory_path).into_iter();
@@ -105,28 +105,9 @@ pub fn index_directory(directory_path: String) {
     index_writer.commit().unwrap();
 }
 
-pub fn index_text() {
-    let schema = build_doc_schema(None);
-    let index = Index::create_in_dir("./index", schema.clone()).unwrap();
-    let mut index_writer: IndexWriter = index.writer(50_000_000).unwrap();
-    let title_field = schema.get_field("title").unwrap();
-    let body_field = schema.get_field("body").unwrap();
-    let doc = index_writer.add_document(doc!(
-        title_field => "Of Mice and Men",
-        body_field => "ØA few miles south of Soledad, the Salinas River drops in close to the hillside \
-            bank and runs deep and green. The water is warm too, for it has slipped twinkling \
-            over the yellow sands in the sunlight before reaching the narrow pool. On one \
-            side of the river the golden foothill slopes curve up to the strong and rocky \
-            Gabilan Mountains, but on the valley side the water is lined with trees—willows \
-            fresh and green with every spring, carrying in their lower leaf junctures the \
-            debris of the winter’s flooding; and sycamores with mottled, white, recumbent \
-            limbs and branches that arch over the pool"
-    )).unwrap();
-    index_writer.commit().unwrap();
-}
-
 pub fn read_index(search_string: String) {
     let schema = build_doc_schema(None);
+    // TODO get this directory from the arguments
     let directory = MmapDirectory::open("./index").unwrap(); // Or FSDirectory::open(index_path)?
     let index = Index::open(directory).unwrap();
     let reader = index
