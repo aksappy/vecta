@@ -23,7 +23,7 @@ name = "vecta-cli"
 path = "src/main.rs"
 
 [dependencies]
-clap = { version = "4.5.29", features = ["derive"] }
+clap = { version = "4.5.29", features = ["derive", "cargo"] }
 env_home = "0.1.0"
 serde = "1.0.217"
 tantivy = "0.22.0"

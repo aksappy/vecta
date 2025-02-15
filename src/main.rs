@@ -1,46 +1,72 @@
-use clap::Parser;
+use clap::{crate_version, Parser, Subcommand};
 
-use vecta::indexer::{index_directory, merge_indices, read_index};
-/// Simple program to greet a person
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct Args {
-    /// Search string
-    #[arg(short, long)]
-    search: Option<String>,
+#[derive(Parser)]
+#[command(name = "vecta")]
+#[command(about = "A CLI tool for indexing and searching source code", long_about = None)]
+struct VectaArgs {
+    #[command(subcommand)]
+    command: VectaCommand,
+}
 
-    /// Index directory path. Defaults can be updated in config.
-    #[arg(short, long)]
-    dir: Option<String>,
+#[derive(Subcommand)]
+enum VectaCommand {
+    /// Search for a query in the indexed directories
+    Search {
+        /// Query to search for
+        query: String,
+    },
+    /// Index a directory
+    Index {
+        /// Directory to index
+        directory: String,
 
-    /// Config file path
-    #[arg(short, long, default_value = "$HOME/.vecta/config")]
-    config: Option<String>,
-
-    /// Index a directory or file.
-    #[arg(short, long, default_value = Option::None)]
-    index: Option<bool>,
+        /// Generate index instead of normal indexing
+        #[arg(short = 'g', long = "generate")]
+        generate: bool,
+    },
+    /// List indexed directories
+    List,
+    /// Remove an indexed directory
+    Remove {
+        /// Directory to remove (optional)
+        directory: Option<String>,
+    },
+    /// Show version information
+    Version,
 }
 
 fn main() {
-    let args = Args::parse();
-    let index = args.index.unwrap_or_else(|| false);
-    let dir = args.dir.unwrap_or(String::from("."));
-    let config = args
-        .config
-        .unwrap_or_else(|| String::from("$HOME/.vecta/config"));
-    if index && !dir.is_empty() {
-        index_directory(dir);
-        merge_indices();
-    }
+    let args = VectaArgs::parse();
 
-    let search = args.search.unwrap_or_else(|| String::from(""));
-    if !search.trim().is_empty() {
-        // get time in milliseconds
-        let start = std::time::Instant::now();
-        println!("Searching for: {}", search);
-        read_index(search);
-        let duration = start.elapsed().as_millis();
-        println!("Search took {} milliseconds", duration);
+    match args.command {
+        VectaCommand::Search { query } => {
+            println!("Searching for: {}", query);
+            // Implement search functionality here
+        }
+        VectaCommand::Index {
+            directory,
+            generate,
+        } => {
+            if generate {
+                println!("Generating index for directory: {}", directory);
+            } else {
+                println!("Indexing directory: {}", directory);
+            }
+            // Implement indexing functionality here
+        }
+        VectaCommand::List => {
+            println!("Listing indexed directories...");
+            // Implement list functionality here
+        }
+        VectaCommand::Remove { directory } => {
+            if let Some(dir) = directory {
+                println!("Removing directory: {}", dir);
+            } else {
+                println!("Removing all indexed directories...");
+            }
+        }
+        VectaCommand::Version => {
+            println!("vecta {}", crate_version!());
+        }
     }
 }

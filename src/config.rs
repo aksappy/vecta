@@ -19,7 +19,7 @@ struct VectaConfiguration {
 
 #[derive(Deserialize, Serialize)]
 struct IndexingConfiguration {
-    directory: String,
+    directories: Vec<String>,
     exclusions: ExclusionConfiguration,
     inclusions: InclusionConfiguration,
 }
@@ -63,7 +63,7 @@ mod config_tests {
     fn config_should_parse_correctly() {
         let config = VectaConfiguration {
             main: IndexingConfiguration {
-                directory: "/path/to/directory".to_string(),
+                directories: vec!["/path/to/directory".to_string()],
                 exclusions: ExclusionConfiguration {
                     excluded_files: vec![],
                     excluded_directories: vec![Value::String(String::from("/path/to/exclusion"))],
