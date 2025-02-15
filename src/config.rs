@@ -1,3 +1,5 @@
+use std::fmt::Error;
+
 /// Configuration for Vecta runtime.
 /// Checks the user's home directory for the vecta configuration file.
 /// If the file is not found, it creates a default configuration file.
@@ -34,6 +36,18 @@ struct InclusionConfiguration {
     included_files: Array,
     included_directories: Array,
     included_extensions: Array,
+}
+
+pub fn read_config(config_path: &str) -> Result<VectaConfiguration, Error> {
+    let config_string = std::fs::read_to_string(config_path).unwrap();
+    let config: VectaConfiguration = toml::from_str(&config_string).unwrap();
+    Ok(config)
+}
+
+pub fn write_config(config: &VectaConfiguration, config_path: &str) -> Result<(), Error> {
+    let config_string = toml::to_string(config).unwrap();
+    std::fs::write(config_path, config_string).unwrap();
+    Ok(())
 }
 
 #[cfg(test)]
