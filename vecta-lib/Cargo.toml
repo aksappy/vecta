@@ -1,0 +1,12 @@
+[package]
+name = "vecta-lib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+env_home = "0.1.0"
+serde = "1.0.217"
+tantivy = "0.22.0"
+tempfile = "3.16.0"
+toml = "0.8.20"
+walkdir = "2.5.0"

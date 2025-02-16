@@ -1,0 +1,11 @@
+[package]
+name = "vecta-cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "vecta-cli"
+
+[dependencies]
+vecta-lib = { path = "../vecta-lib" }
+clap = { version = "4.5.29", features = ["derive", "cargo"] }
