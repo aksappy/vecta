@@ -96,7 +96,7 @@ pub fn index_directory(directory_path: String) {
                         Err(err) => panic!("Failed to add document: {}", err),
                     }
                 }
-                Err(err) => {
+                Err(_err) => {
                     println!("cannot read contents of this type of file {:?}", path)
                 }
             }
