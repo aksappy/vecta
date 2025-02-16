@@ -133,7 +133,7 @@ fn main() {
                 let result =
                     std::fs::remove_dir_all(PathBuf::from(directory).join(".vecta").as_path());
                 match result {
-                    Ok(_) => println!("Directory removed successfully."),
+                    Ok(_) => println!("Vecta directory removed successfully."),
                     Err(e) => println!("Failed to remove directory: {}", e),
                 }
             } else {
