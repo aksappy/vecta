@@ -1,12 +1,7 @@
-use std::{
-    fs::{create_dir_all, remove_dir_all},
-    io,
-    path::PathBuf,
-    time::Instant,
-};
+use std::{ fs::{ create_dir_all, remove_dir_all }, io, path::PathBuf, time::Instant };
 
-use clap::{crate_version, Parser, Subcommand};
-use vecta_lib::indexer::{index_directory, read_index};
+use clap::{ crate_version, Parser, Subcommand };
+use vecta_lib::indexer::{ index_directory, read_index };
 
 #[derive(Parser)]
 #[command(name = "vecta")]
@@ -82,19 +77,19 @@ fn init(directory: &str) {
     println!("Continue? (Y/n)");
 
     let mut response = String::new();
-    io::stdin()
-        .read_line(&mut response)
-        .expect("Failed to read user input");
+    io::stdin().read_line(&mut response).expect("Failed to read user input");
 
     if response.trim().to_lowercase() == "y" {
-        let required_directories = ["config", "data", "logs"]; // Use array for fixed size
+        let required_directories = ["config", "data", "logs"];
         let vecta_dir = PathBuf::from(directory).join(".vecta");
 
         for dir in required_directories {
             let path = vecta_dir.join(dir);
-            if let Err(e) = create_dir_all(&path) {
-                eprintln!("Error creating directory {}: {}", path.display(), e);
-                std::process::exit(1);
+            if !path.exists() {
+                if let Err(e) = create_dir_all(&path) {
+                    eprintln!("Error creating directory {}: {}", path.display(), e);
+                    std::process::exit(1);
+                }
             }
         }
     } else {
@@ -145,9 +140,7 @@ fn destroy(directory: &str) {
     println!("Are you sure you want to proceed? (y/n)");
 
     let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read input");
+    io::stdin().read_line(&mut input).expect("Failed to read input");
 
     if input.trim().to_lowercase() == "y" {
         let vecta_dir = PathBuf::from(directory).join(".vecta");
